@@ -1,3 +1,5 @@
+/*  Copyright (c) 2019, MilanMijatov
+*/
 double addition(double a, double b)
 {
         return a + b;

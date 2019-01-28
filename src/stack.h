@@ -1,3 +1,5 @@
+/*  Copyright (c) 2019, MilanMijatov
+*/
 #include <stdlib.h>
 
 struct stack {
