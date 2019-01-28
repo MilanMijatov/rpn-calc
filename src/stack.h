@@ -2,6 +2,9 @@
 */
 #include <stdlib.h>
 
+/* Standard linked list stack
+   TODO: change to array based linked list stack */
+
 struct stack {
         struct node *nxt;
 };
