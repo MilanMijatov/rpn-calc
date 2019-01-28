@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 int rpn(int cnt, char *s[])
 {
-        int i;
+        int i; /* counter */
         struct stack stck; /* Declare stack */
         double a, b; /* Declare two operands */
         double (*op) (double, double) = NULL; /* Initialize to null */
