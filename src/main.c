@@ -22,7 +22,7 @@ int rpn(int cnt, char *s[])
         double a, b; /* Declare two operands */
         double (*op) (double, double) = NULL; /* Initialize to null */
         
-        for(i = 0; i < cnt; i++)
+        for(i = 1; i < cnt; i++) /* start at 1 to avoid the first element */
         {
                 switch(*s[i])
                 { /* Find the operator being used and set the function ptr */
@@ -38,20 +38,39 @@ int rpn(int cnt, char *s[])
                         case '/':
                                 op = division;
                                 break;
+                        case '^':
+                                op = exponation;
+                                break;
+                        case 'r':
+                                if(*(s[i] + 1) == 'o' && *(s[i] + 2) == 'o'
+                                        && *(s[i] + 3) == 't' 
+                                        && *(s[i] + 4) == '\0')
+                                        op = root;
+                                else if(*(s[i] + 1) == '\0')
+                                        op = root;
+                                else
+                                        EXIT_FAILURE;                          
+                                break;
                         default:
                                 op = NULL; 
                 }
-
+                
                 if(op)
                 { /* If the function ptr is set perform an operation */
                         pop(&stck,&b);
                         pop(&stck,&a);
                         push(&stck, op(a, b));
+                        op = NULL; 
                 }
-                else
+                else if(isdigit(*s[i]))
                 { /* Add the opperand to the stack */
                         push(&stck, strtod(s[i], NULL));
                 }
+                else
+                {
+                        EXIT_FAILURE;
+                }
+                
         }
         printf("%f\n", stck.nxt->a); /* Send the result to STDOUT */
         return 0;                    /* TODO: change to fprinf() */
