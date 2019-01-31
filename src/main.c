@@ -6,12 +6,15 @@
 #include "stack.h"
 #include "operations.h"
 
+#define ERROR_TOKEN 
+
 int rpn(int, char**);
 
 int main(int argc, char *argv[])
 {
         //char *s[] = {"15","4","+"};
-        rpn(argc, argv);
+        if(rpn(argc, argv))
+                exit(EXIT_FAILURE);
         return 0;
 }
 
@@ -21,6 +24,7 @@ int rpn(int cnt, char *s[])
         struct stack stck; /* Declare stack */
         double a, b; /* Declare two operands */
         double (*op) (double, double) = NULL; /* Initialize to null */
+        char *c;
         
         for(i = 1; i < cnt; i++) /* start at 1 to avoid the first element */
         {
@@ -49,29 +53,51 @@ int rpn(int cnt, char *s[])
                                 else if(*(s[i] + 1) == '\0')
                                         op = root;
                                 else
-                                        EXIT_FAILURE;                          
+                                {
+                                        fprintf(stderr, "Error: Invalid input on token: %s\n", s[i]);
+                                        return(1);
+                                }
                                 break;
                         default:
-                                op = NULL; 
+                                op = NULL;
                 }
                 
                 if(op)
                 { /* If the function ptr is set perform an operation */
-                        pop(&stck,&b);
-                        pop(&stck,&a);
+                        if(pop(&stck,&b))
+                        {
+                                fprintf(stderr, "Error: Invalid number of operator/opperands\n");
+                                return(1);
+                        }
+                        if(pop(&stck,&a))
+                        {
+                                fprintf(stderr, "Error: Invalid number of operator/opperands\n");
+                                return(1);
+                        }
                         push(&stck, op(a, b));
-                        op = NULL; 
+                        op = NULL;
                 }
                 else if(isdigit(*s[i]))
                 { /* Add the opperand to the stack */
-                        push(&stck, strtod(s[i], NULL));
+                        push(&stck, strtod(s[i], &c));
+                        if(*c)
+                        {
+                                fprintf(stderr, "Error: Invalid Token Element no.%d:\t%s\n", i, s[i]);
+                                return(1);
+                        }
                 }
                 else
                 {
-                        EXIT_FAILURE;
+                        fprintf(stderr, "Error: Invalid Token Element no.%d:\t%s\n", i, s[i]);
+                        return(1);
                 }
                 
         }
-        printf("%f\n", stck.nxt->a); /* Send the result to STDOUT */
+        if(pop(&stck,&a))
+        {
+                fprintf(stderr, "Error: Invalid number of operator/opperands\n");
+                return(1);
+        }
+        printf("%f\n", a); /* Send the result to STDOUT */
         return 0;                    /* TODO: change to fprinf() */
 }
