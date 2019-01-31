@@ -98,6 +98,6 @@ int rpn(int cnt, char *s[])
                 fprintf(stderr, "Error: Invalid number of operator/opperands\n");
                 return(1);
         }
-        printf("%f\n", a); /* Send the result to STDOUT */
-        return 0;                    /* TODO: change to fprinf() */
+        fprintf(stdout,"%f\n", a); /* Send the result to STDOUT */
+        return 0;
 }
