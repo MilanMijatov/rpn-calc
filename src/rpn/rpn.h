@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "stack.h"
+#include "operations.h"
 
-int rpn(int cnt, char *s[])
+//__declspec(dllexport) char* rpn_export(int cnt,char** str);
+
+int rpn(int cnt, char *s[], double *ret, int startat)
 {
         int i; /* counter */
         struct stack stck; /* Declare stack */
@@ -10,7 +14,7 @@ int rpn(int cnt, char *s[])
         double (*op) (double, double) = NULL; /* Initialize to null */
         char *c;
         
-        for(i = 1; i < cnt; i++) /* start at 1 to avoid the first element */
+        for(i = startat; i < cnt; i++) /* start at 1 to avoid the first element */
         {
                 switch(*s[i])
                 { /* Find the operator being used and set the function ptr */
@@ -51,12 +55,12 @@ int rpn(int cnt, char *s[])
                         if(pop(&stck,&b))
                         {
                                 fprintf(stderr, "Error: Invalid number of operator/opperands\n");
-                                return(1);
+                                return(2);
                         }
                         if(pop(&stck,&a))
                         {
                                 fprintf(stderr, "Error: Invalid number of operator/opperands\n");
-                                return(1);
+                                return(2);
                         }
                         push(&stck, op(a, b));
                         op = NULL;
@@ -77,11 +81,13 @@ int rpn(int cnt, char *s[])
                 }
                 
         }
+        
         if(pop(&stck,&a))
         {
                 fprintf(stderr, "Error: Invalid number of operator/opperands\n");
                 return(1);
         }
         fprintf(stdout,"%f\n", a); /* Send the result to STDOUT */
+        *ret = a;
         return 0;
 }
